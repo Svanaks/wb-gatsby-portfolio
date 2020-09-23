@@ -20,11 +20,7 @@ const ArticleDate = styled.h5`
 const MarkerHeader = styled.h3`
   display: inline;
   border-radius: 1em 0 1em 0;
-  background-image: linear-gradient(
-    -100deg,
-    rgba(255, 250, 150, 0.15),
-    rgba(255, 250, 150, 0.8) 100%,
-    rgba(255, 250, 150, 0.25)
+  background-image: linear-gradient( -100deg,rgba(255,250,150,0.15),#2196F3 100%,rgba(255,250,150,0.25)
   );
 `
 
@@ -36,12 +32,13 @@ const ReadingTime = styled.h5`
 const IndexPage = ({ data }) => {
   return (
     <Layout>
-      <SEO title="Blog" />
+      <SEO title="Experiences" />
       <Content>
-        <h1>Blog</h1>
+        <h1>Experiences</h1>
         {data.allMarkdownRemark.edges
           .filter(({ node }) => {
             const rawDate = node.frontmatter.rawDate
+            const rawEndDate = node.frontmatter.rawDate
             const date = new Date(rawDate)
             return date < new Date()
           })
@@ -58,7 +55,10 @@ const IndexPage = ({ data }) => {
               </Link>
               <div>
                 <ArticleDate>{node.frontmatter.date}</ArticleDate>
-                <ReadingTime> - {node.fields.readingTime.text}</ReadingTime>
+                {node.frontmatter.endDate &&
+                  <>{` - `}</>
+                }
+                <ArticleDate>{node.frontmatter.endDate}</ArticleDate>
               </div>
               <p>{node.excerpt}</p>
             </div>
@@ -88,14 +88,13 @@ export const query = graphql`
           frontmatter {
             title
             date(formatString: "DD MMMM, YYYY")
+            endDate(formatString: "DD MMMM, YYYY")
             rawDate: date
+            rawEndDate: endDate
             path
           }
           fields {
             slug
-            readingTime {
-              text
-            }
           }
           excerpt
         }

@@ -41,6 +41,7 @@ exports.createPages = ({ graphql, actions }) => {
               path
               draft
               date
+              endDate
             }
             fields {
               slug
@@ -50,18 +51,18 @@ exports.createPages = ({ graphql, actions }) => {
       }
     }
   `).then(result => {
-    if (result.errors) {
-      return Promise.reject(result.errors)
-    }
-    result.data.allMarkdownRemark.edges
-      .filter(({ node }) => !node.frontmatter.draft)
-      .forEach(({ node }) => {
-        createPage({
-          path: node.frontmatter.path,
-          component: blogPostTemplate,
-          slug: node.fields.slug,
-          context: {},
+      if (result.errors) {
+        return Promise.reject(result.errors)
+      }
+      result.data.allMarkdownRemark.edges
+        .filter(({ node }) => !node.frontmatter.draft)
+        .forEach(({ node }) => {
+          createPage({
+            path: node.frontmatter.path,
+            component: blogPostTemplate,
+            slug: node.fields.slug,
+            context: {},
+          })
         })
-      })
-  })
+    })
 }
